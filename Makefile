@@ -1,10 +1,13 @@
+SHELL := bash
+
 all: \
 	test-euler1 \
+	test-euler23 \
 	test-hello
 
 .PHONY: test-%
 test-%: bin/%
-		./$< | diff -u $(notdir $<).txt -
+		./$< | tee >(sha1sum | diff -u $(notdir $<).txt -)
 
 .PRECIOUS: bin/%
 bin/%: obj/%.o
@@ -17,6 +20,11 @@ obj/%.o: asm/%.s
 		as -o $@ $<
 
 .PRECIOUS: asm/%.s
-asm/%.s: %.ll
+asm/%.s: ir/%.bc
 		mkdir -p asm
 		llc -o $@ $<
+
+.PRECIOUS: ir/%.bc
+ir/%.bc: %.ll
+		mkdir -p ir
+		opt -O3 -lint $< >$@

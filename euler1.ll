@@ -28,6 +28,6 @@ increment_i:
 loop_exit:
   %fmt = getelementptr [4 x i8], [4 x i8]* @fmt, i1 0, i1 0
   call i32 (i8*, ...) @printf(i8* %fmt, i32 %s)
-  call void (i32) @exit(i32 0) noreturn
+  call void @exit(i32 0) noreturn
   unreachable
 }
