@@ -1,4 +1,6 @@
-all: test-hello
+all: \
+	test-euler1 \
+	test-hello
 
 .PHONY: test-%
 test-%: bin/%
@@ -10,6 +12,11 @@ bin/%: obj/%.o
 		ld -o $@ -macosx_version_min 10.13 $< -lc
 
 .PRECIOUS: obj/%.o
-obj/%.o: %.ll
+obj/%.o: asm/%.s
 		mkdir -p obj
-		llc -o $@ -filetype=obj $<
+		as -o $@ $<
+
+.PRECIOUS: asm/%.s
+asm/%.s: %.ll
+		mkdir -p asm
+		llc -o $@ $<
